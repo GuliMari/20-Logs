@@ -1,0 +1,51 @@
+- name: Enable epel-release
+  ansible.builtin.yum:
+    name: epel-release
+    state: present
+
+- name: Install nginx
+  ansible.builtin.yum:
+    name: nginx
+    state: present
+         
+- name: Copy nginx configuration file
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  
+- name: Restart nginx
+  ansible.builtin.systemd:
+    name: nginx.service
+    state: restarted
+    enabled: true
+
+- name: Copy audit rules file
+  ansible.builtin.copy:
+    src: roles/web/files/audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+
+- name: Copy auditd configuration file
+  ansible.builtin.copy:
+    src: auditd.conf
+    dest: /etc/audit/auditd.conf
+    
+- name: Install audispd-plugins
+  ansible.builtin.yum:
+    name: audispd-plugins
+    state: present
+
+- name: Copy audisp-remote configuration file
+  ansible.builtin.copy:
+   src: audisp-remote.conf
+   dest: /etc/audisp/audisp-remote.conf
+
+- name: Copy au-remote configuration file
+  ansible.builtin.copy:
+   src: au-remote.conf
+   dest: /etc/audisp/plugins.d/au-remote.conf
+
+- name: Restart auditd
+  ansible.builtin.service:
+   name: auditd.service
+   state: restarted
+   use: service   

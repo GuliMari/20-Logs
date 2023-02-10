@@ -1,0 +1,28 @@
+---
+
+- hosts: all
+  gather_facts: false
+  become: true
+  pre_tasks:
+    - name: Set timezone to Europe/Moscow
+      community.general.timezone:
+        name: Europe/Moscow
+        hwclock: local
+      
+    - name: Restart chronyd
+      ansible.builtin.systemd:
+        name: chronyd.service
+        state: restarted
+
+- hosts: web
+  gather_facts: false
+  become: true
+  roles: 
+    - web
+
+- hosts: log
+  gather_facts: false
+  become: true
+  roles:
+    - log
+...
