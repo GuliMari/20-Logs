@@ -1,12 +1,12 @@
 - name: Copy rsyslog configuration file
   ansible.builtin.copy:
     src: rsyslog.conf
-    dest: /etc/audit/rules.d/audit.rules
+    dest: /etc/rsyslog.conf
 
 - name: Restart rsyslog
   ansible.builtin.systemd:
     name: rsyslog.service
-    state: restarted  
+    state: restarted
 
 - name: Copy auditd configuration file
   ansible.builtin.copy:
@@ -14,7 +14,4 @@
     dest: /etc/audit/auditd.conf
 
 - name: Restart auditd
-  ansible.builtin.service:
-   name: auditd.service
-   state: restarted
-   use: service
+  ansible.builtin.command: /sbin/service auditd restart
